@@ -1,16 +1,10 @@
 import os
 
-import lightning as L
 import torch
-from torch.nn import functional as F
 from torch.utils.data import DataLoader, Subset
-from torchmetrics import Accuracy
 from torchvision import transforms
 from torchvision.datasets import MNIST
 from omegaconf import DictConfig
-
-import mlflow.pytorch
-from mlflow import MlflowClient
 
 def get_dataloader(cfg: DictConfig) -> DataLoader:
 

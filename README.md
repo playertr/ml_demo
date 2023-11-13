@@ -34,6 +34,7 @@ cd ~/aim_repo
 aim up
 # Sync AIM and MLFlow
 aimlflow sync --mlflow-tracking-uri=http://localhost:5000 --aim-repo=~/aim_repo
+# go to http://localhost:43800
 ```
 
 # Organization:

@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "timnet"
+version = "0.0.1"
+authors = [{name="Tim Player", email="timrplayer@gmail.com" }]
+description = "MNIST classifier."
+readme = "README.md"
+dependencies = ["cachetools","requests"]
+requires-python = ">=3.11"
+
+[project.scripts]
+timnet = "timnet.cli:main"
+
+[project.urls]
+"Homepage" = "https://github.com/playertr/ml_demo"
+"Bug Tracker" = "https://github.com/playertr/ml_demo/issues"

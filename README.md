@@ -1,5 +1,5 @@
 # ml_demo
-Experimental demos of dataset/model configuration and devops. Based on demo from [Sovit Ranjan Rath](https://debuggercafe.com/training-resnet18-from-scratch-using-pytorch/).
+Experimental demos of dataset/model configuration and devops.
 
 # Organization:
 - Training Repo (this repo)

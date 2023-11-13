@@ -1,34 +1,35 @@
-import torch
-from tqdm import tqdm
+import lightning as L
+from omegaconf import DictConfig
 
-# Training function.
-def train(model, trainloader, optimizer, criterion, device):
-    model.train()
-    print('Training')
-    train_running_loss = 0.0
-    train_running_correct = 0
-    counter = 0
-    for i, data in tqdm(enumerate(trainloader), total=len(trainloader)):
-        counter += 1
-        image, labels = data
-        image = image.to(device)
-        labels = labels.to(device)
-        optimizer.zero_grad()
-        # Forward pass.
-        outputs = model(image)
-        # Calculate the loss.
-        loss = criterion(outputs, labels)
-        train_running_loss += loss.item()
-        # Calculate the accuracy.
-        _, preds = torch.max(outputs.data, 1)
-        train_running_correct += (preds == labels).sum().item()
-        # Backpropagation
-        loss.backward()
-        # Update the weights.
-        optimizer.step()
-    
-    # Loss and accuracy for the complete epoch.
-    epoch_loss = train_running_loss / counter
-    # epoch_acc = 100. * (train_running_correct / len(trainloader.dataset))
-    epoch_acc = 100. * (train_running_correct / len(trainloader.dataset))
-    return epoch_loss, epoch_acc
+import mlflow.pytorch
+from mlflow import MlflowClient
+
+from timnet.dataset.dataset import get_dataloader
+from timnet.models.models import MNISTModel
+
+def print_auto_logged_info(r):
+    tags = {k: v for k, v in r.data.tags.items() if not k.startswith("mlflow.")}
+    artifacts = [f.path for f in MlflowClient().list_artifacts(r.info.run_id, "model")]
+    print(f"run_id: {r.info.run_id}")
+    print(f"artifacts: {artifacts}")
+    print(f"params: {r.data.params}")
+    print(f"metrics: {r.data.metrics}")
+    print(f"tags: {tags}")
+
+def train(cfg: DictConfig) -> None:
+
+    train_loader = get_dataloader(cfg.dataloader)
+    mnist_model = MNISTModel(cfg.model)
+
+    # Initialize a trainer.
+    trainer = L.Trainer(max_epochs=3)
+
+    # Auto log all MLflow entities
+    mlflow.pytorch.autolog()
+
+    # Train the model.
+    with mlflow.start_run() as run:
+        trainer.fit(mnist_model, train_loader)
+
+    # Fetch the auto logged parameters and metrics.
+    print_auto_logged_info(mlflow.get_run(run_id=run.info.run_id))

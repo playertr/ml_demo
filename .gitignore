@@ -1,0 +1,5 @@
+lightning_logs/*
+mlruns/*
+MNIST/*
+**/__pycache__/*
+*.egg-info

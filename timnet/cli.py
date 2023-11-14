@@ -19,13 +19,24 @@ def get_parser() -> argparse.ArgumentParser:
 
     return parser
 
-def main():
-    parser = get_parser()
-    args = parser.parse_args()
-    # TODO: parse subcommand verbs like "train"
-
+def train_entrypoint(args): -> None:
     cfg = OmegaConf.load(args.config_file)
     train(cfg)
+
+def main():
+    parser = get_parser()
+
+    subparsers = parser.add_subparsers(title='subcommands',
+        description='train',
+        help='additional help')
+
+    train_parser = subparsers.add_parser('train')
+
+    train_parser.set_defaults(func=train_entrypoint)
+
+    args = parser.parse_args()
+    args.func(args)
+    
 
 if __name__ == "__main__":
     main()

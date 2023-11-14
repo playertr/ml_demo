@@ -19,7 +19,7 @@ def get_parser() -> argparse.ArgumentParser:
 
     return parser
 
-def train_entrypoint(args): -> None:
+def train_entrypoint(args) -> None:
     cfg = OmegaConf.load(args.config_file)
     train(cfg)
 
